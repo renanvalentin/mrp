@@ -1,0 +1,3 @@
+// @flow
+
+declare export function generate(passport: {country: string, dateOfBirth: string, expirationDate: string, gender: string, name: {firstName: string, lastName: string, surname: string}, number: string, personalNumber: string}): Array<string>;

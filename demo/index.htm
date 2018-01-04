@@ -1,0 +1,114 @@
+<head>
+    <title>MRP Demo</title>
+
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #212938 0%, #251e33 100%);
+            color: white;
+            font-size: 2em;
+            font-family: Robot, Arial;
+            letter-spacing: .2em;
+        }
+
+        #holder {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #row_2 {
+            margin-top: .5em;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="holder">
+        <div id="row_1"></div>
+        <div id="row_2"></div>
+    </div>
+
+
+    <script src="../dist/mrp.js"></script>
+
+    <script>
+        const animationDuration = (minTime = 50, maxTime = 1000) => {
+            return Math.floor(Math.random() * maxTime) + minTime;
+        }
+
+        const render = (row, node) => {
+            const animation = row.split('').map(letter => {
+                const el = document.createElement('span');
+                el.textContent = letter;
+
+                document.querySelector(node).appendChild(el);
+
+                return enterMatrix(letter, el);
+            });
+
+            Promise.all(animation).then(() => {
+                setTimeout(() => {
+                    document.querySelector(node).innerHTML = '';
+                    render(row, node);
+                }, animationDuration(1000, 2000));
+            });
+        };
+
+        const enterMatrix = (letter, node) => new Promise(resolve => {
+            const randomize = l => {
+                const matrixLetters = Array.from({length: 100}, (v, i) => String.fromCharCode(i));
+
+                return Math.random() > .5 ? matrixLetters[Math.floor(Math.random() * matrixLetters.length)] : l;
+            }
+
+            const duration = animationDuration();
+
+            let start = null;
+
+            const matrix = timestamp => {
+                if (!start) start = timestamp;
+                const progress = timestamp - start;
+
+                const matrixLetters = ['$', '@', 'A', ')', '%', '?'];
+
+                node.textContent = randomize(letter);
+
+                if (progress < duration) {
+                    window.requestAnimationFrame(matrix);
+                } else {
+                    node.textContent = letter;
+
+                    resolve();
+                }
+            }
+
+            window.requestAnimationFrame(matrix);
+        });
+
+        const passport = {
+            name: {
+                firstName: 'Donkey',
+                surname: 'Kong',
+                lastName: 'Country'
+            },
+            country: 'Brazil',
+            number: 'YO213971',
+            dateOfBirth: '920322',
+            gender: 'M',
+            expirationDate: '120722',
+            personalNumber: '12345678901234'
+        };
+
+        const [firstRow, secondRow] = mrp.generate(passport);
+
+        render(firstRow, '#row_1');
+        render(secondRow, '#row_2');
+    </script>
+</body>

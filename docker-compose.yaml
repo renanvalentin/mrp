@@ -1,0 +1,25 @@
+version: '3'
+services:
+  demo:
+      build:
+        context: .
+      ports:
+        - 3000:3000        
+      volumes:
+        - .:/home/app/mrp/
+        - node_modules:/home/app/mrp/node_modules/
+        - /home/app/.flow-typed/
+        - /home/app/mrp/flow-typed/    
+      command: ./demo.sh
+  test:
+      build:
+        context: .
+      volumes:
+        - .:/home/app/mrp/
+        - node_modules:/home/app/mrp/node_modules/
+        - /home/app/.flow-typed/
+        - /home/app/mrp/flow-typed/    
+      command: yarn run test
+
+volumes:
+  node_modules:
